@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>File Encryption</title>
+    <script src="jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <h1>File Encryption</h1>
+    <label for="">Select the .txt message to encrypt:</label>
+    <br />
+    <input type="file" id="fileUpload" />
+    <br /><br />
+    <button id="encryptBtn">Encrypt</button>
+    <a id="downloadLink" style="display: none" download="encrypted.txt"
+      >Download Encrypted File</a
+    >
+    <br /><br />
+    <h1>File Decryption</h1>
+    <label for="">Select the encrypted message to decrypt:</label>
+    <br />
+    <input type="file" id="encryptedFileUpload" />
+    <br /><br />
+    <button id="decryptBtn">Decrypt</button>
+    <br /><br />
+    <p>Decrypted message here:</p>
+    <div id="decryptedMessage"></div>
+
+    <script>
+        $(document).ready(function () {
+          var fileInput = document.getElementById("fileUpload"); // Get the file input element with the ID "fileUpload"
+          var encryptBtn = document.getElementById("encryptBtn"); // Get the encrypt button element with the ID "encryptBtn"
+          var downloadLink = document.getElementById("downloadLink"); // Get the download link element with the ID "downloadLink"
+          var encryptedFileInput = document.getElementById("encryptedFileUpload"); // Get the encrypted file input element with the ID "encryptedFileUpload"
+          var decryptBtn = document.getElementById("decryptBtn"); // Get the decrypt button element with the ID "decryptBtn"
+          var decryptedMessage = document.getElementById("decryptedMessage"); // Get the decrypted message element with the ID "decryptedMessage"
+      
+          // Encrypt file on button click
+          encryptBtn.addEventListener("click", function () { // Add a click event listener to the encrypt button
+            var file = fileInput.files[0]; // Get the selected file from the file input
+            var reader = new FileReader(); // Create a new FileReader object to read the file
+            reader.onload = function (e) { // Set the onload event handler for when the file is loaded
+              var encryptedMessage = encrypt(e.target.result); // Encrypt the file content using the encrypt function
+              var encryptedBlob = new Blob([encryptedMessage], { // Create a new Blob object with the encrypted message
+                type: "text/plain", // Set the type of the blob as text/plain
+              });
+              var url = URL.createObjectURL(encryptedBlob); // Create a URL for the encrypted blob
+              downloadLink.href = url; // Set the download link's href attribute to the URL
+              downloadLink.style.display = "block"; // Display the download link
+            };
+            reader.readAsText(file); // Read the file as text
+          });
+      
+          // Decrypt file on button click
+          decryptBtn.addEventListener("click", function () { // Add a click event listener to the decrypt button
+            var file = encryptedFileInput.files[0]; // Get the selected encrypted file from the encrypted file input
+            var reader = new FileReader(); // Create a new FileReader object to read the file
+            reader.onload = function (e) { // Set the onload event handler for when the file is loaded
+              var decryptedMessage = decrypt(e.target.result); // Decrypt the file content using the decrypt function
+              $("#decryptedMessage").text(decryptedMessage); // Set the decrypted message as the text of the decrypted message element
+            };
+            reader.readAsText(file); // Read the file as text
+          });
+      
+          function encrypt(message) { // Define the encrypt function that takes a message as input
+            // Implement your encryption logic here
+            // For example, you can use a simple Caesar cipher
+            var encryptedMessage = ""; // Initialize an empty string to store the encrypted message
+            var shift = 1; // Define the shift value for the Caesar cipher
+            for (var i = 0; i < message.length; i++) { // Iterate over each character in the message
+              var charCode = message.charCodeAt(i); // Get the character code of the current character
+              if (charCode >= 65 && charCode <= 90) { // If the character is uppercase alphabet
+                encryptedMessage += String.fromCharCode( // Add the encrypted character to the encrypted message
+                  ((charCode - 65 + shift) % 26) + 65
+                );
+              } else if (charCode >= 97 && charCode <= 122) { // If the character is lowercase alphabet
+                encryptedMessage += String.fromCharCode( // Add the encrypted character to the encrypted message
+                  ((charCode - 97 + shift) % 26) + 97
+                );
+              } else { // If the character is not an alphabet
+                encryptedMessage += message.charAt(i); // Add the character as it is to the encrypted message
+              }
+            }
+            return encryptedMessage; // Return the encrypted message
+          }
+      
+          function decrypt(encryptedMessage) { // Define the decrypt function that takes an encrypted message as input
+            // Implement your decryption logic here
+            // For example, you can reverse the Caesar cipher
+            var decryptedMessage = ""; // Initialize an empty string to store the decrypted message
+            var shift = 1; // Define the shift value for the Caesar cipher
+            for (var i = 0; i < encryptedMessage.length; i++) { // Iterate over each character in the encrypted message
+              var charCode = encryptedMessage.charCodeAt(i); // Get the character code of the current character
+              if (charCode >= 65 && charCode <= 90) { // If the character is uppercase alphabet
+                decryptedMessage += String.fromCharCode( // Add the decrypted character to the decrypted message
+                  ((charCode - 65 - shift + 26) % 26) + 65
+                );
+              } else if (charCode >= 97 && charCode <= 122) { // If the character is lowercase alphabet
+                decryptedMessage += String.fromCharCode( // Add the decrypted character to the decrypted message
+                  ((charCode - 97 - shift + 26) % 26) + 97
+                );
+              } else { // If the character is not an alphabet
+                decryptedMessage += encryptedMessage.charAt(i); // Add the character as it is to the decrypted message
+              }
+            }
+            return decryptedMessage; // Return the decrypted message
+          }
+        });
+      </script>
+  </body>
+</html>
