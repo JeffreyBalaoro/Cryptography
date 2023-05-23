@@ -7,6 +7,7 @@ body {
     height: 100vh;
     box-sizing: border-box;
     background-color: #252674;
+    background-image: url("Image/Background.jfif");
   }
   .container {
     max-height: 400px;
@@ -18,7 +19,7 @@ body {
     border-radius: 10px;
     background-color: #ffffff;
     box-sizing: border-box;
-    overflow: auto;
+    overflow:auto;
   }
   
   h1 {
